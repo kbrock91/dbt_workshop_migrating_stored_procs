@@ -1,0 +1,15 @@
+sources:
+  - name: tpch
+    schema: TPCH_SF1
+    database: SNOWFLAKE_SAMPLE_DATA
+    tables:
+      - name: part_suppliers
+        identifier: PARTSUPP
+      - name: parts
+        identifier: PART
+      - name: suppliers
+        identifier: SUPPLIER
+      - name: nations
+        identifier: NATION
+      - name: regions
+        identifier: REGION

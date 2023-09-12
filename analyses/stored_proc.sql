@@ -1,5 +1,5 @@
 create
-or replace table tpch_part_test_all(
+or replace table fct_tpch_parts(
     supplier_id string,
     nation_id string,
     part_id string,
@@ -24,7 +24,7 @@ or replace table tpch_part_test_all(
     lowest_part_cost_in_region float
 );
 insert into
-    tpch_part_test_all (
+    fct_tpch_parts (
         supplier_id,
         nation_id,
         part_id,
@@ -75,37 +75,22 @@ select
 from
     SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.SUPPLIER suppliers
     left join SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.PARTSUPP part_suppliers on suppliers.s_suppkey = part_suppliers.ps_suppkey
-    left join SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.PART parts on parts.p_partkey = part_suppliers.ps_partkey;
-UPDATE
-    tpch_part_test_all
-SET
-    lowest_part_cost_in_region = min_parts.lowest_part_cost_in_region
-FROM
-    (
-        SELECT
-            part_id,
-            min(part_supplier_cost) as lowest_part_cost_in_region
-        FROM
-            tpch_part_test_all
-        GROUP BY
-            part_id
-    ) min_parts
-WHERE
-    tpch_part_test_all.part_id = min_parts.part_id;
+    left join SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.PART parts on parts.p_partkey = part_suppliers.ps_partkey
+
 DELETE FROM
-    tpch_part_test_all
+    fct_tpch_parts
 WHERE
     part_material not ilike '%brass%';
 ALTER TABLE
-    tpch_part_test_all
+    fct_tpch_parts
 ADD
     region string;
 ALTER TABLE
-    tpch_part_test_all
+    fct_tpch_parts
 ADD
     nation string;
 UPDATE
-    tpch_part_test_all
+    fct_tpch_parts
 SET
     region = locations.region,
     nation = locations.nation
@@ -123,23 +108,46 @@ FROM
             left join SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.REGION regions on nations.n_regionkey = regions.r_regionkey
     ) locations
 WHERE
-    tpch_part_test_all.nation_id = locations.nation_id;
-    
-create or replace table tpch_part_test_log(part_id string, supplier_is_null string);
+    fct_tpch_parts.nation_id = locations.nation_id;
 
-insert into tpch_part_test_log (
+UPDATE
+    fct_tpch_parts
+SET
+    lowest_part_cost_in_region = min_parts.lowest_part_cost_in_region
+FROM
+    (
+        SELECT
+            part_id,
+            region_id,
+            min(part_supplier_cost) as lowest_part_cost_in_region
+        FROM
+            fct_tpch_parts
+        GROUP BY
+            part_id, region_id
+    ) min_parts
+WHERE
+    fct_tpch_parts.part_id = min_parts.part_id;
+
+DELETE FROM
+    fct_tpch_parts
+WHERE
+    part_material not ilike '%brass%';
+
+create or replace table fct_tpch_parts_log(part_id string, supplier_is_null string);
+
+insert into fct_tpch_parts_log (
     part_id, supplier_is_null)
-select part_id,'YES' as supplier_is_null from tpch_part_test_all where supplier_id is null 
+select part_id,'YES' as supplier_is_null from fct_tpch_parts where supplier_id is null 
 union all 
 select '00000' as part_id, 'YES' as supplier_is_null;
 
 DELETE FROM
-    tpch_part_test_all
+    fct_tpch_parts
     
 WHERE
     part_id in (
         select 
-            tpch_part_test_all.part_id
-        from tpch_part_test_all 
-        inner join tpch_part_test_log
-        on tpch_part_test_all.part_id = tpch_part_test_log.part_id);
+            fct_tpch_parts.part_id
+        from fct_tpch_parts 
+        inner join fct_tpch_parts_log
+        on fct_tpch_parts.part_id = fct_tpch_parts_log.part_id);
