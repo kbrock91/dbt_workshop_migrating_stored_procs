@@ -3,6 +3,7 @@
         materialized='table'
     )
 }}
+
 with fct_tpch_parts as (
 select
     suppliers.s_suppkey as supplier_id,
