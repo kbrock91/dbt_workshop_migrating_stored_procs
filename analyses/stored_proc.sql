@@ -128,11 +128,6 @@ FROM
 WHERE
     fct_tpch_parts.part_id = min_parts.part_id;
 
-DELETE FROM
-    fct_tpch_parts
-WHERE
-    part_material not ilike '%brass%';
-
 create or replace table fct_tpch_parts_log(part_id string, supplier_is_null string);
 
 insert into fct_tpch_parts_log (
