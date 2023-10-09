@@ -9,3 +9,7 @@ sources:
         identifier: PART
       - name: suppliers
         identifier: SUPPLIER
+      - name: nations
+        identifier: NATION
+      - name: regions
+        identifier: REGION
