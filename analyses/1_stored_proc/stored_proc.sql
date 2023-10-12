@@ -77,10 +77,7 @@ from
     left join SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.PARTSUPP part_suppliers on suppliers.s_suppkey = part_suppliers.ps_suppkey
     left join SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.PART parts on parts.p_partkey = part_suppliers.ps_partkey
 
-DELETE FROM
-    fct_tpch_parts
-WHERE
-    part_material not ilike '%brass%';
+
 ALTER TABLE
     fct_tpch_parts
 ADD
