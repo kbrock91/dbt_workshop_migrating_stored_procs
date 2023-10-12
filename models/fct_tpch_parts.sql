@@ -31,6 +31,6 @@ select
     end as part_material,
     parts.p_comment as part_comment
 from
-    {{ source('tpch', 'suppliers') }} suppliers
-    left join {{ source('tpch', 'part_suppliers') }} part_suppliers on suppliers.s_suppkey = part_suppliers.ps_suppkey
-    left join {{ source('tpch', 'parts') }} parts on parts.p_partkey = part_suppliers.ps_partkey
+    SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.SUPPLIER suppliers
+    left join SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.PARTSUPP part_suppliers on suppliers.s_suppkey = part_suppliers.ps_suppkey
+    left join SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.PART parts on parts.p_partkey = part_suppliers.ps_partkey
