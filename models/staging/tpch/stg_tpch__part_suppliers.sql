@@ -1,22 +1,14 @@
-with 
+with
 
-source as (
+    source as (select * from {{ source("tpch", "part_suppliers") }}),
 
-    select * from {{ source('tpch', 'part_suppliers') }}
+    renamed as (
 
-),
+        select ps_partkey, ps_suppkey, ps_availqty, ps_supplycost, ps_comment
 
-renamed as (
+        from source
 
-    select
-        ps_partkey,
-        ps_suppkey,
-        ps_availqty,
-        ps_supplycost,
-        ps_comment
+    )
 
-    from source
-
-)
-
-select * from renamed
+select *
+from renamed
