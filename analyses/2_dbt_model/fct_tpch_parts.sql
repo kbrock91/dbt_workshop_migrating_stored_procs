@@ -1,3 +1,4 @@
+
 select
     suppliers.s_suppkey as supplier_id,
     suppliers.s_nationkey as nation_id,
