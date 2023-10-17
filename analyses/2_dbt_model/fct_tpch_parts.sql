@@ -1,4 +1,3 @@
-
 select
     suppliers.s_suppkey as supplier_id,
     suppliers.s_nationkey as nation_id,
@@ -19,12 +18,12 @@ select
     parts.p_type as part_type,
     parts.p_container as part_container,
     parts.p_retailprice as part_retail_price,
-    case
-        when parts.p_type like '%BRASS' then 'brass'
-        else p_type
-    end as part_material,
+    case when parts.p_type like '%BRASS' then 'brass' else p_type end as part_material,
     parts.p_comment as part_comment
-from
-    SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.SUPPLIER suppliers
-    left join SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.PARTSUPP part_suppliers on suppliers.s_suppkey = part_suppliers.ps_suppkey
-    left join SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.PART parts on parts.p_partkey = part_suppliers.ps_partkey
+from snowflake_sample_data.tpch_sf1.supplier suppliers
+left join
+    snowflake_sample_data.tpch_sf1.partsupp part_suppliers
+    on suppliers.s_suppkey = part_suppliers.ps_suppkey
+left join
+    snowflake_sample_data.tpch_sf1.part parts
+    on parts.p_partkey = part_suppliers.ps_partkey
