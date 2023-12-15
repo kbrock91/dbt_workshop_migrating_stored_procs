@@ -2,7 +2,7 @@ with
 
 source as (
 
-    select * from {{ source('tpch', 'part_suppliers') }}
+    select * from {{ source('tpch', 'partsupp') }}
 
 ),
 

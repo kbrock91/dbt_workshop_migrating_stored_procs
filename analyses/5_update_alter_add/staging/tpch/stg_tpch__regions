@@ -2,7 +2,7 @@ with
 
 source as (
 
-    select * from {{ source('tpch', 'regions') }}
+    select * from {{ source('tpch', 'region') }}
 
 ),
 
