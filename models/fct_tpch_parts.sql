@@ -4,7 +4,7 @@
     )
 }}
 
-
+with fct_tpch_parts as (
 select
     suppliers.s_suppkey as supplier_id,
     suppliers.s_nationkey as nation_id,
@@ -31,6 +31,39 @@ select
     end as part_material,
     parts.p_comment as part_comment
 from
-    hive_metastore.tpch.supplier suppliers
-    left join  hive_metastore.tpch.PARTSUPP part_suppliers on suppliers.s_suppkey = part_suppliers.ps_suppkey
-    left join  hive_metastore.tpch.PART parts on parts.p_partkey = part_suppliers.ps_partkey
+    {{ ref('stg_tpch__suppliers') }} suppliers
+    left join {{ ref('stg_tpch__part_suppliers') }} part_suppliers on suppliers.s_suppkey = part_suppliers.ps_suppkey
+    left join {{ ref('stg_tpch__parts') }} parts on parts.p_partkey = part_suppliers.ps_partkey
+),
+
+locations as (
+   select 
+        fct_tpch_parts.*,
+        locations.region_id,
+        locations.nation_id,
+        locations.region,
+        locations.nation
+    from fct_tpch_parts
+    left join {{ ref('dim_locations') }} locations on fct_tpch_parts.nation_id = locations.nation_id
+),
+
+min_parts as (
+SELECT
+    part_id,
+    region_id,
+    min(part_supplier_cost) as lowest_part_cost_in_region
+FROM
+    locations
+GROUP BY
+    part_id, region_id
+),
+
+final as (
+    select 
+       fct_tpch_parts.*,
+       min_parts.lowest_part_cost_in_region
+    from fct_tpch_parts
+    left join min_parts on  fct_tpch_parts.part_id = min_parts.part_id
+)
+
+select * from final
