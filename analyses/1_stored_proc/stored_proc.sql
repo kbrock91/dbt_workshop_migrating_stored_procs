@@ -101,8 +101,8 @@ FROM
             r_name as region,
             r_comment as region_comment
         from
-            SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.NATION nations
-            left join SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.REGION regions on nations.n_regionkey = regions.r_regionkey
+           TPCH.NATION nations
+            left join TPCH.REGION regions on nations.n_regionkey = regions.r_regionkey
     ) locations
 WHERE
     fct_tpch_parts.nation_id = locations.nation_id;
